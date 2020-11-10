@@ -85,15 +85,19 @@ def compare_times(G_lst: list, n: int = 100):
     returns avg time per iter
     """
 
-    @timeit(" Starting comparison ")
     def compare_times_(func):
+        print(" Running {} ".format(func.__name__).center(100, "-"))
         start_time = time.time()
         for _ in tqdm(range(n), total=n):
             for i in range(1, g.n):
                 func(i)
-        print(
-            "Avg time for {}: {}".format(func.__name__, (time.time() - start_time) / n)
-        )
+        res_time = (time.time() - start_time) / n
+        if res_time >= 10:
+            m, s = res_time // 60, res_time % 60
+            t = "{:0>2}min:{:0>2}s".format(m, s)
+        else:
+            t = "{:.0f}ms".format(res_time * 1000)
+        print("Avg running time for {}: {}".format(func.__name__, t))
 
     g = Graph(G_lst)
     for func in [g.dijkstra, g.dijkstra_heap]:
